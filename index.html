@@ -16,7 +16,7 @@
         .navbar {
             background-color: #222;
             padding: 10px 0;
-            text-align: center; /* Center the navbar text */
+            text-align: center;
             position: fixed; /* Make the navbar fixed at the top */
             top: 0; /* Position it at the top */
             width: 100%; /* Make it full width */
@@ -38,7 +38,7 @@
         }
 
         .channel-header {
-            margin-top: 60px;
+            margin-top: 60px; /* Add top margin to avoid overlapping with the fixed navbar */
             background-color: #222;
             padding: 20px;
             display: flex;
@@ -125,6 +125,36 @@
             cursor: pointer;
             margin-top: 20px;
         }
+
+        /* Define the custom context menu styles */
+        /* Define the custom context menu styles */
+        .custom-context-menu {
+            position: absolute;
+            background: #333;
+            color: #fff;
+            border: 1px solid #555;
+            z-index: 1000;
+            display: none;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.2s, transform 0.2s; /* Added transitions for both opacity and transform */
+        }
+
+        .custom-context-menu.show-menu {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .custom-context-menu-item {
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        /* Context menu animation */
+        .show-menu {
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
 </head>
 <body>
@@ -133,7 +163,7 @@
             <li><a href="#">Home</a></li>
             <li><a href="/videos">Videos</a></li>
             <li><a href="/projects">Projects</a></li>
-            <li><a href="github.com/lwdd-win">Github</a></li>
+            <li><a href="https://www.github.com/lwdd-win">Github</a></li>
         </ul>
     </div>
     <div id="popup" class="popup">
@@ -163,20 +193,64 @@
         </div>
         <!-- Repeat the video section for more videos -->
     </div>
+    
+    <!-- Custom context menu for GitHub link -->
+    <div class="custom-context-menu" id="githubContextMenu">
+        <div class="custom-context-menu-item" onclick="viewGitHubProfile2()">Show my Github profile</div>
+        <div class="custom-context-menu-item" onclick="viewGitHubProfile3()">Show my Youtube channel</div>
+        <div class="custom-context-menu-item" onclick="viewGitHubProfile()">Show source code (Github)</div>
+    </div>
+    
     <script>
         // Function to display the popup
         function showPopup() {
             document.getElementById("popup").style.display = "block";
-            window.history.replaceState({}, document.title, window.location.pathname);
             document.title = "404 error";
+            window.history.replaceState({}, document.title, window.location.pathname);
         }
 
         // Function to close the popup
         function goBackHome() {
+            // Remove the query parameter from the URL
             
             // Close the popup
             document.getElementById("popup").style.display = "none";
             document.title = "LWDD's website";
+        }
+
+        // Function to open the custom context menu
+        function openContextMenu(event) {
+            event.preventDefault();
+            const githubContextMenu = document.getElementById("githubContextMenu");
+            githubContextMenu.style.display = "block";
+            githubContextMenu.style.left = `${event.clientX}px`;
+            githubContextMenu.style.top = `${event.clientY}px`;
+            githubContextMenu.classList.add("show-menu"); // Add animation class
+        }
+
+        // Function to close the custom context menu
+        function closeContextMenu() {
+            const githubContextMenu = document.getElementById("githubContextMenu");
+            githubContextMenu.classList.remove("show-menu"); // Remove animation class
+            setTimeout(() => {
+                githubContextMenu.style.display = "none";
+            }, 200); // Wait for the animation to complete
+        }
+
+        // Function to open GitHub profile
+        function viewGitHubProfile() {
+            window.open("https://www.github.com/lwdd-win/lwdd-win.github.io/");
+            closeContextMenu();
+        }
+
+        function viewGitHubProfile2() {
+            window.open("https://www.github.com/lwdd-win/");
+            closeContextMenu();
+        }
+
+        function viewGitHubProfile3() {
+            window.open("https://www.youtube.com/@lwdd.win11");
+            closeContextMenu();
         }
 
         window.onload = function() {
@@ -187,6 +261,10 @@
                 // Display the popup if it's a 404 redirection
                 showPopup();
             }
+
+            // Attach context menu to the entire page
+            document.addEventListener("contextmenu", openContextMenu);
+            document.addEventListener("click", closeContextMenu);
         };
     </script>
 </body>
